@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Services\UrlShortnerService;
 use App\Models\Link;
+use Exception;
 use GuzzleHttp\Psr7\Header;
 use Illuminate\Http\Request;
 
@@ -17,17 +18,16 @@ class UrlShortnerController extends Controller
 
     public function save(Request $request){
         $response = $this->UrlShortnerService->saveShortnedUrl($request);
-
+        
         return response()->json($response);
     }
 
     public function redirect($url){
-        $url_origin = Link::where('short_code',$url)->first();
-
-        if(!$url_origin){
-            return response()->json(['message'=>'url nao encontrada'],404);
+        try{
+            $new_url = $this->UrlShortnerService->redirect($url);
+            return redirect()->away($new_url);
+        }catch(Exception $e){
+            return response()->json(['message'=>$e->getMessage()]);
         }
-
-        return redirect()->away($url_origin->original_url);
     }
 }
