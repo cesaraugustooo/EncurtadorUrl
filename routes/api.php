@@ -12,4 +12,4 @@ Route::get('/user', function (Request $request) {
 
 Route::post('/shortned',[UrlShortnerController::class,'save']);
 
-Route::get('/{url}',[UrlShortnerController::class,'redirect']);
+Route::get('/get/{url}',[UrlShortnerController::class,'redirect']);
